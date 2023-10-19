@@ -1,15 +1,15 @@
 package com.spencer.workouttracker.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,14 +33,19 @@ import kotlin.math.roundToInt
 fun SwipeToDeleteAndToggleStarItem(
     bodyArea: String,
     onDelete: () -> Unit,
+    selectedItem: String?,
     onClick: () -> Unit
+
 ) {
     var offsetX by remember { mutableStateOf(0f) }
     val screenWidth = LocalConfiguration.current.screenWidthDp
 
     Box(
         modifier = Modifier
+            .fillMaxWidth()
             .offset { IntOffset(offsetX.roundToInt(), 0) }
+            .background(if (bodyArea == selectedItem) Color(0xFF313866) else Color.Transparent)
+            .clickable { onClick() }
             .draggable(
                 orientation = Orientation.Horizontal,
                 state = rememberDraggableState { delta ->

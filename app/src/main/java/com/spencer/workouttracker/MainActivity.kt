@@ -39,3 +39,9 @@ data class Workout(val name: String, val weight: Int, val repetitions: Int, val 
         sets = 1
     )
 }
+
+data class WorkoutCategory(
+    val name: String,
+    val weightSum: Int,
+    val workouts: List<Workout>
+)
