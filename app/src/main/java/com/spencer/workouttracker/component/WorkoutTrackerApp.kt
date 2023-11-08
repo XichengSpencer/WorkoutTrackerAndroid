@@ -25,15 +25,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import com.spencer.workouttracker.R
+import com.spencer.workouttracker.Workout
+import com.spencer.workouttracker.WorkoutCategory
 
 
 @Preview
 @Composable
 fun WorkoutTrackerApp() {
     //for each body area, list of workout(stored), total weight
-    val bodyAreas = listOf("Arms", "Legs", "Chest", "Back")
-    // Create a NavController
-    val navController = rememberNavController()
+    val workoutCategories = defaultWorkoutCategoryGenerator()
+
+    var selectedCategory by remember { mutableStateOf(workoutCategories.first()) }
     Row (
         modifier = Modifier.background(
             color = Color(0xFF313866)
@@ -73,23 +75,50 @@ fun WorkoutTrackerApp() {
                     .verticalScroll(rememberScrollState())
             )
             {
-                val selectedItem = remember { mutableStateOf<String?>(null) }
-                bodyAreas.forEach { bodyArea ->
+                workoutCategories.forEach { category ->
                     SwipeToDeleteAndToggleStarItem(
-                        bodyArea = bodyArea,
+                        bodyArea = category,
                         onDelete = { /* Handle delete action */ },
-                        selectedItem.value
+                        selectedCategory
                     ) {
-                        selectedItem.value = bodyArea
+                        selectedCategory = category
                         // Navigate to the corresponding Composable when clicked
-                        navController.navigate(bodyArea)
+
                     }
                 }
             }
 
         }
         // Workout Fragments
-        WorkoutFragment(navController)
+        WorkoutFragment(workoutCategory = selectedCategory)
 
     }
+}
+fun defaultWorkoutCategoryGenerator(): MutableList<WorkoutCategory> {
+    val bodyAreas = listOf("Arms", "Legs", "Chest", "Back")
+    val workoutCategories = mutableListOf<WorkoutCategory>()
+
+    bodyAreas.forEach { bodyArea ->
+        val workouts = when (bodyArea) {
+            "Arms" -> listOf(
+                Workout(name = "Bicep Curls", weight = 20, sets = 10, repetitions = 2),
+                Workout(name = "Hammer Curls", weight = 25, sets = 8, repetitions = 3)
+            )
+            "Legs" -> listOf(
+                Workout(name = "Squats", weight = 30, sets = 10, repetitions = 2),
+                Workout(name = "Lunges", weight = 35, sets = 8, repetitions = 3)
+            )
+            "Chest" -> listOf(
+                Workout(name = "Bench Press", weight = 40, sets = 10, repetitions = 2),
+                Workout(name = "Incline Dumbbell Press", weight = 45, sets = 8, repetitions = 3)
+            )
+            "Back" -> listOf(
+                Workout(name = "Pull-ups", weight = 50, sets = 10, repetitions = 2),
+                Workout(name = "Lat Pulldowns", weight = 55, sets = 8, repetitions = 3)
+            )
+            else -> emptyList()
+        }
+        workoutCategories.add(WorkoutCategory(name = bodyArea, weightSum = 0, workouts = workouts))
+    }
+    return workoutCategories
 }

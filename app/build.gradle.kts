@@ -1,7 +1,8 @@
 @Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
     alias(libs.plugins.androidApplication)
-    alias(libs.plugins.kotlinAndroid)
+    id("org.jetbrains.kotlin.android")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -34,6 +35,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+    kotlin {
+        jvmToolchain(8)
+    }
     kotlinOptions {
         jvmTarget = "1.8"
     }
@@ -41,7 +45,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.3"
+        kotlinCompilerExtensionVersion = "1.5.3"
     }
     packaging {
         resources {
@@ -51,11 +55,21 @@ android {
 }
 
 dependencies {
-    val nav_version = "2.7.2"
-    val data_store_version = "1.0.0"
+    val navVersion = "2.7.2"
+    val dataStoreVersion = "1.0.0"
+    val roomVersion = "2.6.0"
 
-    implementation("androidx.navigation:navigation-compose:$nav_version")
-    implementation( "androidx.datastore:datastore-preferences:$data_store_version")
+    implementation ("androidx.room:room-runtime:$roomVersion")
+    annotationProcessor("androidx.room:room-compiler:$roomVersion")
+
+    ksp("androidx.room:room-compiler:$roomVersion")
+    // optional - Kotlin Extensions and Coroutines support for Room
+    implementation ("androidx.room:room-ktx:$roomVersion")
+
+    // optional - Test helpers
+    testImplementation ("androidx.room:room-testing:$roomVersion")
+    implementation("androidx.navigation:navigation-compose:$navVersion")
+    implementation( "androidx.datastore:datastore-preferences:$dataStoreVersion")
     implementation("androidx.compose.material:material:1.5.3")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
     implementation ("androidx.compose.runtime:runtime-livedata:1.5.3")

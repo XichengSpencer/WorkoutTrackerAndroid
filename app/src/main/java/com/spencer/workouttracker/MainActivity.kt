@@ -10,6 +10,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import androidx.room.Relation
 import com.spencer.workouttracker.component.WorkoutTrackerApp
 import com.spencer.workouttracker.ui.theme.WorkoutTrackerTheme
 
@@ -30,18 +34,3 @@ class MainActivity : ComponentActivity() {
     }
 
 }
-
-data class Workout(val name: String, val weight: Int, val repetitions: Int, val sets: Int){
-    constructor(name: String):this(
-        name = name,
-        weight = 1,
-        repetitions = 1,
-        sets = 1
-    )
-}
-
-data class WorkoutCategory(
-    val name: String,
-    val weightSum: Int,
-    val workouts: List<Workout>
-)

@@ -27,13 +27,14 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.spencer.workouttracker.R
+import com.spencer.workouttracker.WorkoutCategory
 import kotlin.math.roundToInt
 
 @Composable
 fun SwipeToDeleteAndToggleStarItem(
-    bodyArea: String,
+    bodyArea: WorkoutCategory,
     onDelete: () -> Unit,
-    selectedItem: String?,
+    selectedItem: WorkoutCategory,
     onClick: () -> Unit
 
 ) {
@@ -77,7 +78,7 @@ fun SwipeToDeleteAndToggleStarItem(
                     .clickable { isStarFilled = !isStarFilled }
             )
             Text(
-                text = bodyArea,
+                text = bodyArea.name,
                 fontSize = 20.sp,
                 textAlign = TextAlign.Center
             )
