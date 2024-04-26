@@ -23,16 +23,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.compose.rememberNavController
 import com.spencer.workouttracker.R
-import com.spencer.workouttracker.Workout
-import com.spencer.workouttracker.WorkoutCategory
+import com.spencer.workouttracker.database.WorkoutCategory
+import com.spencer.workouttracker.database.WorkoutDatabase
 
 
 @Preview
 @Composable
 fun WorkoutTrackerApp() {
     //for each body area, list of workout(stored), total weight
+    val categories by viewModel.workoutCategories.collectAsState(initial = emptyList())
+    val workouts by viewModel.workouts.collectAsState(initial = emptyList())
     val workoutCategories = defaultWorkoutCategoryGenerator()
 
     var selectedCategory by remember { mutableStateOf(workoutCategories.first()) }
@@ -75,7 +76,7 @@ fun WorkoutTrackerApp() {
                     .verticalScroll(rememberScrollState())
             )
             {
-                workoutCategories.forEach { category ->
+                workoutCategories?.forEach { category:WorkoutCategory ->
                     SwipeToDeleteAndToggleStarItem(
                         bodyArea = category,
                         onDelete = { /* Handle delete action */ },
@@ -94,31 +95,30 @@ fun WorkoutTrackerApp() {
 
     }
 }
-fun defaultWorkoutCategoryGenerator(): MutableList<WorkoutCategory> {
-    val bodyAreas = listOf("Arms", "Legs", "Chest", "Back")
-    val workoutCategories = mutableListOf<WorkoutCategory>()
 
-    bodyAreas.forEach { bodyArea ->
-        val workouts = when (bodyArea) {
-            "Arms" -> listOf(
-                Workout(name = "Bicep Curls", weight = 20, sets = 10, repetitions = 2),
-                Workout(name = "Hammer Curls", weight = 25, sets = 8, repetitions = 3)
-            )
-            "Legs" -> listOf(
-                Workout(name = "Squats", weight = 30, sets = 10, repetitions = 2),
-                Workout(name = "Lunges", weight = 35, sets = 8, repetitions = 3)
-            )
-            "Chest" -> listOf(
-                Workout(name = "Bench Press", weight = 40, sets = 10, repetitions = 2),
-                Workout(name = "Incline Dumbbell Press", weight = 45, sets = 8, repetitions = 3)
-            )
-            "Back" -> listOf(
-                Workout(name = "Pull-ups", weight = 50, sets = 10, repetitions = 2),
-                Workout(name = "Lat Pulldowns", weight = 55, sets = 8, repetitions = 3)
-            )
-            else -> emptyList()
-        }
-        workoutCategories.add(WorkoutCategory(name = bodyArea, weightSum = 0, workouts = workouts))
+private fun defaultWorkoutCategoryGenerator(): List<WorkoutCategory> {
+    val categories = mutableListOf<WorkoutCategory>()
+
+    // Add dummy categories
+    categories.add(WorkoutCategory(name = "Chest"))
+    categories.add(WorkoutCategory(name = "Back"))
+    categories.add(WorkoutCategory(name = "Legs"))
+    categories.add(WorkoutCategory(name = "Arms"))
+    categories.add(WorkoutCategory(name = "Shoulders"))
+
+    // Get an instance of the database
+    val db = WorkoutDatabase.getInstance(context)
+
+    // Get the WorkoutCategoryDao
+    val workoutCategoryDao = db.workoutCategoryDao()
+
+    // Insert the dummy categories into the database
+    categories.forEach { category ->
+        workoutCategoryDao.insert(category)
     }
-    return workoutCategories
+
+    // Close the database connection
+    db.close()
+
+    return categories
 }

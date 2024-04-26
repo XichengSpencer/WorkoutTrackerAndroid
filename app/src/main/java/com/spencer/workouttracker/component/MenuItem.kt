@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.spencer.workouttracker.R
-import com.spencer.workouttracker.WorkoutCategory
+import com.spencer.workouttracker.database.WorkoutCategory
 import kotlin.math.roundToInt
 
 @Composable

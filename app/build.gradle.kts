@@ -1,8 +1,10 @@
 @Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
+
 plugins {
     alias(libs.plugins.androidApplication)
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -58,6 +60,7 @@ dependencies {
     val navVersion = "2.7.2"
     val dataStoreVersion = "1.0.0"
     val roomVersion = "2.6.0"
+    val hiltVersion = "2.4.4"
 
     implementation ("androidx.room:room-runtime:$roomVersion")
     annotationProcessor("androidx.room:room-compiler:$roomVersion")
@@ -70,6 +73,8 @@ dependencies {
     testImplementation ("androidx.room:room-testing:$roomVersion")
     implementation("androidx.navigation:navigation-compose:$navVersion")
     implementation( "androidx.datastore:datastore-preferences:$dataStoreVersion")
+    implementation("com.google.dagger:hilt-android:$hiltVersion")
+    ksp("com.google.dagger:hilt-android-compiler:$hiltVersion")
     implementation("androidx.compose.material:material:1.5.3")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
     implementation ("androidx.compose.runtime:runtime-livedata:1.5.3")

@@ -5,8 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
-import com.spencer.workouttracker.Workout
-import com.spencer.workouttracker.WorkoutCategory
+import androidx.room.Update
 
 @Dao
 interface WorkoutCategoryDao {
@@ -18,7 +17,10 @@ interface WorkoutCategoryDao {
     fun getWorkoutsForCategory(categoryId: Int): List<Workout>
     @Insert
     fun insertAll(vararg workoutCategories: WorkoutCategory)
-
+    @Insert
+    fun insert(workoutCategory: WorkoutCategory)
+    @Update
+    fun update(workoutCategory: WorkoutCategory)
     @Delete
     fun delete(workoutCategory: WorkoutCategory)
 }
