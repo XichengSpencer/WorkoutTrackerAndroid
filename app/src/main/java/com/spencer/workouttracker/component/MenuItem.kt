@@ -34,7 +34,7 @@ import kotlin.math.roundToInt
 fun SwipeToDeleteAndToggleStarItem(
     bodyArea: WorkoutCategory,
     onDelete: () -> Unit,
-    selectedItem: WorkoutCategory,
+    selectedItem: WorkoutCategory?,
     onClick: () -> Unit
 
 ) {

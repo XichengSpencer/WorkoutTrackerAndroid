@@ -2,50 +2,49 @@ package com.spencer.workouttracker.repository
 
 import android.annotation.SuppressLint
 import android.content.Context
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.emptyPreferences
-import androidx.datastore.preferences.core.intPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.map
-import java.io.IOException
+import com.spencer.workouttracker.database.Workout
+import com.spencer.workouttracker.database.WorkoutCategory
+import com.spencer.workouttracker.database.WorkoutDatabase
 
-class WorkoutRepository (private val context: Context) {
-    //generate preference key by id
-    private object PreferencesKeys {
-        val weightSum = intPreferencesKey("weight_sum")
-    }
-    companion object {
-        private var INSTANCE: WorkoutRepository? = null
-        fun getInstance(context: Context): WorkoutRepository =
-            INSTANCE ?: synchronized(this) {
-                INSTANCE ?: WorkoutRepository(context.applicationContext).also { INSTANCE = it }
-            }
+import javax.inject.Inject
+import javax.inject.Singleton
+
+@Singleton
+class WorkoutRepository @Inject constructor(
+    private val workoutDatabase: WorkoutDatabase
+) {
+    private val workoutCategoryDao = workoutDatabase.workoutCategoryDao()
+    private val workoutDao = workoutDatabase.workoutDao()
+
+    suspend fun getAllWorkoutCategories(): List<WorkoutCategory> {
+        return workoutCategoryDao.getAll()
     }
 
-    val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "workout_pref")
-    //get data by key
-    val weightSumFlow: Flow<Int> = context.dataStore.data
-        .catch { exception ->
-            if (exception is IOException) {
-                emit(emptyPreferences())
-            } else {
-                throw exception
-            }
-        }
-        .map { preferences ->
-            // TODO: Create dynamic GLOBAL_WEIGHT_SUM_KEY as ID to retreive each workout record
-            preferences[PreferencesKeys.weightSum] ?: 0
-        }
-
-    suspend fun updateWeightSum(weight: Int) {
-        context.dataStore.edit { preferences ->
-            preferences[PreferencesKeys.weightSum] = weight
-        }
+    suspend fun insertWorkoutCategory(category: WorkoutCategory) {
+        workoutCategoryDao.insert(category)
     }
 
+    suspend fun updateWorkoutCategory(category: WorkoutCategory) {
+        workoutCategoryDao.update(category)
+    }
 
+    suspend fun deleteWorkoutCategory(category: WorkoutCategory) {
+        workoutCategoryDao.delete(category)
+    }
+
+    suspend fun getWorkoutsByCategory(categoryId: Int): List<Workout> {
+        return workoutCategoryDao.getWorkoutsForCategory(categoryId)
+    }
+
+    suspend fun insertWorkout(workout: Workout) {
+        workoutDao.insert(workout)
+    }
+
+    suspend fun updateWorkout(workout: Workout) {
+        workoutDao.update(workout)
+    }
+
+    suspend fun deleteWorkout(workout: Workout) {
+        workoutDao.delete(workout)
+    }
 }

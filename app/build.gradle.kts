@@ -4,7 +4,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
-    id("com.google.dagger.hilt.android")
+//    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -58,9 +58,7 @@ android {
 
 dependencies {
     val navVersion = "2.7.2"
-    val dataStoreVersion = "1.0.0"
     val roomVersion = "2.6.0"
-    val hiltVersion = "2.4.4"
 
     implementation ("androidx.room:room-runtime:$roomVersion")
     annotationProcessor("androidx.room:room-compiler:$roomVersion")
@@ -72,12 +70,17 @@ dependencies {
     // optional - Test helpers
     testImplementation ("androidx.room:room-testing:$roomVersion")
     implementation("androidx.navigation:navigation-compose:$navVersion")
-    implementation( "androidx.datastore:datastore-preferences:$dataStoreVersion")
-    implementation("com.google.dagger:hilt-android:$hiltVersion")
-    ksp("com.google.dagger:hilt-android-compiler:$hiltVersion")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+    ksp("androidx.hilt:hilt-compiler:1.0.0")
     implementation("androidx.compose.material:material:1.5.3")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
     implementation ("androidx.compose.runtime:runtime-livedata:1.5.3")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
+    implementation("androidx.compose.runtime:runtime:1.6.6")
+    implementation("androidx.compose.runtime:runtime-livedata:1.6.6")
+    implementation("androidx.compose.runtime:runtime-rxjava2:1.6.6")
+
+
     implementation(libs.core.ktx)
     implementation(libs.lifecycle.runtime.ktx)
     implementation(libs.activity.compose)
