@@ -27,6 +27,9 @@ import com.spencer.workouttracker.R
 import com.spencer.workouttracker.database.WorkoutCategory
 import com.spencer.workouttracker.viewmodel.WorkoutViewModel
 
+//TODO: Sort out the mvvm architecture with the new room intergration
+//TODO: Migrate to Hilt
+
 
 @Composable
 fun WorkoutTrackerApp(viewModel: WorkoutViewModel) {
@@ -88,7 +91,6 @@ fun WorkoutTrackerApp(viewModel: WorkoutViewModel) {
 
         }
         // Workout Fragments
-        WorkoutFragment(workoutCategory = selectedCategory)
-
+        selectedCategory?.let { WorkoutFragment(workoutCategory = it) }
     }
 }

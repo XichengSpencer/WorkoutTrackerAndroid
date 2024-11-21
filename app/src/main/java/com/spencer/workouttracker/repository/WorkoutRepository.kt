@@ -15,7 +15,7 @@ class WorkoutRepository @Inject constructor(
 ) {
     private val workoutCategoryDao = workoutDatabase.workoutCategoryDao()
     private val workoutDao = workoutDatabase.workoutDao()
-
+    //TODO: convert List to Flow when data size grows and update corresponding Dao and view model methods
     suspend fun getAllWorkoutCategories(): List<WorkoutCategory> {
         return workoutCategoryDao.getAll()
     }
@@ -23,17 +23,15 @@ class WorkoutRepository @Inject constructor(
     suspend fun insertWorkoutCategory(category: WorkoutCategory) {
         workoutCategoryDao.insert(category)
     }
-
+    suspend fun getWorkoutsByCategory(categoryId: Int): List<Workout> {
+        return workoutCategoryDao.getWorkoutsForCategory(categoryId)
+    }
     suspend fun updateWorkoutCategory(category: WorkoutCategory) {
         workoutCategoryDao.update(category)
     }
 
     suspend fun deleteWorkoutCategory(category: WorkoutCategory) {
         workoutCategoryDao.delete(category)
-    }
-
-    suspend fun getWorkoutsByCategory(categoryId: Int): List<Workout> {
-        return workoutCategoryDao.getWorkoutsForCategory(categoryId)
     }
 
     suspend fun insertWorkout(workout: Workout) {

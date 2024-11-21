@@ -8,9 +8,6 @@ import androidx.room.Update
 
 @Dao
 interface WorkoutDao {
-    @Query("SELECT * FROM workout")
-    fun getAllByCategory(categoryId: Int): List<Workout>
-
     @Insert
     fun insertAll(vararg workouts: Workout)
 

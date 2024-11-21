@@ -38,11 +38,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import com.spencer.workouttracker.Workout
-import com.spencer.workouttracker.WorkoutCategory
+import com.spencer.workouttracker.database.Workout
+import com.spencer.workouttracker.database.WorkoutCategory
 import com.spencer.workouttracker.repository.WorkoutRepository
 import com.spencer.workouttracker.viewmodel.WorkoutViewModel
 import kotlinx.coroutines.launch
@@ -71,7 +68,13 @@ fun WorkoutFragment(workoutCategory: WorkoutCategory) {
                     trailingIcon = {
                         IconButton(onClick = {
                             // Add to list
-                            workoutCategory.workouts += Workout(name = exerciseName)
+                            if (exerciseName.isNotBlank()) {
+                                // Create new Workout and add to database
+                                val newWorkout = Workout(
+                                    name = exerciseName,
+                                    categoryId = workoutCategoryId // Link to the selected category
+                                )
+                            }
                             // Clear text
                             exerciseName = ""
                         }) {
@@ -93,7 +96,7 @@ fun WorkoutFragment(workoutCategory: WorkoutCategory) {
             LazyColumn(
                 modifier = Modifier.weight(1f)
             ) {
-                //todo
+                //todo: refractor to use latest Workouts Entity
                 items(workoutCategory.workouts) { workout ->
                     WorkoutItem(workout) { newWeightSum ->
                         workoutViewModel.weightSum.value?.let { it1 ->
