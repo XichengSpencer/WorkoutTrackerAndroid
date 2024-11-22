@@ -19,10 +19,11 @@ import com.spencer.workouttracker.component.WorkoutTrackerApp
 import com.spencer.workouttracker.ui.theme.WorkoutTrackerTheme
 import com.spencer.workouttracker.viewmodel.WorkoutViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.HiltAndroidApp
 
 @AndroidEntryPoint
+@HiltAndroidApp
 class MainActivity : ComponentActivity() {
-    private val viewModel: WorkoutViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +34,7 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    WorkoutTrackerApp(viewModel = viewModel)
+                    WorkoutTrackerApp()
                 }
             }
         }

@@ -8,8 +8,8 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
@@ -25,6 +25,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -38,20 +39,24 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.spencer.workouttracker.database.Workout
 import com.spencer.workouttracker.database.WorkoutCategory
-import com.spencer.workouttracker.repository.WorkoutRepository
 import com.spencer.workouttracker.viewmodel.WorkoutViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun WorkoutFragment(workoutCategory: WorkoutCategory) {
-    val workoutViewModel = WorkoutViewModel(WorkoutRepository.getInstance(LocalContext.current))
+fun WorkoutFragment(workoutCategoryId: Int) {
+    val workoutViewModel: WorkoutViewModel = hiltViewModel()
 
+    LaunchedEffect(workoutCategoryId) {
+        workoutViewModel.loadWorkoutsForCategory(workoutCategoryId)
+    }
     val coroutineScope = rememberCoroutineScope()
     val bottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-    //var selectedBodyArea by remember { mutableStateOf(bodyAreas[0]) }
+    val workoutsForSelectedCategory by workoutViewModel.workoutsForSelectedCategory.observeAsState(emptyList())
+
 
 
     ModalBottomSheetLayout(
@@ -74,6 +79,7 @@ fun WorkoutFragment(workoutCategory: WorkoutCategory) {
                                     name = exerciseName,
                                     categoryId = workoutCategoryId // Link to the selected category
                                 )
+                                workoutViewModel.insertWorkout(newWorkout)
                             }
                             // Clear text
                             exerciseName = ""
@@ -96,12 +102,12 @@ fun WorkoutFragment(workoutCategory: WorkoutCategory) {
             LazyColumn(
                 modifier = Modifier.weight(1f)
             ) {
-                //todo: refractor to use latest Workouts Entity
-                items(workoutCategory.workouts) { workout ->
-                    WorkoutItem(workout) { newWeightSum ->
-                        workoutViewModel.weightSum.value?.let { it1 ->
-                            workoutViewModel.updateWeightSum(it1+newWeightSum)
-
+                //TODO: fix the weight sum part
+                items(workoutsForSelectedCategory) { workout ->
+                    WorkoutItem(workout = workout) { newWeightSum ->
+                        workoutViewModel.weightSum.value?.let { currentWeightSum ->
+                            // Update the weight sum with the new value
+                            workoutViewModel.updateWeightSum(currentWeightSum + newWeightSum)
                         }
                     }
                 }

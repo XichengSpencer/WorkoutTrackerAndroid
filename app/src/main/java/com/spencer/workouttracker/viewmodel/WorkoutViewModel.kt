@@ -30,7 +30,12 @@ class WorkoutViewModel @Inject constructor(
             _workoutCategories.value = workoutRepository.getAllWorkoutCategories()
         }
     }
-
+    fun insertWorkout(workout: Workout) {
+        viewModelScope.launch {
+            workoutRepository.insertWorkout(workout)
+            loadWorkoutsForCategory(workout.categoryId)
+        }
+    }
     fun setSelectedCategory(category: WorkoutCategory?) {
         _selectedCategory.value = category
         if (category != null) {
@@ -39,6 +44,11 @@ class WorkoutViewModel @Inject constructor(
             }
         } else {
             _workoutsForSelectedCategory.value = emptyList()
+        }
+    }
+    fun loadWorkoutsForCategory(categoryId: Int) {
+        viewModelScope.launch {
+            _workoutsForSelectedCategory.value = workoutRepository.getWorkoutsByCategory(categoryId)
         }
     }
 

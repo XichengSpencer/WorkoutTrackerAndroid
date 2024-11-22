@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.spencer.workouttracker.R
 import com.spencer.workouttracker.database.WorkoutCategory
 import com.spencer.workouttracker.viewmodel.WorkoutViewModel
@@ -32,8 +33,9 @@ import com.spencer.workouttracker.viewmodel.WorkoutViewModel
 
 
 @Composable
-fun WorkoutTrackerApp(viewModel: WorkoutViewModel) {
+fun WorkoutTrackerApp() {
     //for each body area, list of workout(stored), total weight
+    val viewModel: WorkoutViewModel = hiltViewModel()
     val categories by viewModel.workoutCategories.observeAsState(initial = emptyList())
     val selectedCategory by viewModel.selectedCategory.observeAsState(initial = null)
     Row (
@@ -91,6 +93,6 @@ fun WorkoutTrackerApp(viewModel: WorkoutViewModel) {
 
         }
         // Workout Fragments
-        selectedCategory?.let { WorkoutFragment(workoutCategory = it) }
+        selectedCategory?.let { WorkoutFragment(workoutCategoryId = it.id) }
     }
 }
