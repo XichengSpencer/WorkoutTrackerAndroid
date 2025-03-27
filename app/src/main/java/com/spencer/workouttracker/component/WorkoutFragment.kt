@@ -49,15 +49,15 @@ import kotlinx.coroutines.launch
 @Composable
 fun WorkoutFragment(workoutCategoryId: Int) {
     val workoutViewModel: WorkoutViewModel = hiltViewModel()
-
+    //preload the workouts for the selected category into the view model using id
     LaunchedEffect(workoutCategoryId) {
         workoutViewModel.loadWorkoutsForCategory(workoutCategoryId)
     }
+    //scope the coroutine with the fragment
     val coroutineScope = rememberCoroutineScope()
     val bottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+    //track the selected workouts and set default value to empty list
     val workoutsForSelectedCategory by workoutViewModel.workoutsForSelectedCategory.observeAsState(emptyList())
-
-
 
     ModalBottomSheetLayout(
         sheetState = bottomSheetState,
@@ -104,12 +104,12 @@ fun WorkoutFragment(workoutCategoryId: Int) {
             ) {
                 //TODO: fix the weight sum part
                 items(workoutsForSelectedCategory) { workout ->
-                    WorkoutItem(workout = workout) { newWeightSum ->
-                        workoutViewModel.weightSum.value?.let { currentWeightSum ->
-                            // Update the weight sum with the new value
-                            workoutViewModel.updateWeightSum(currentWeightSum + newWeightSum)
+                    WorkoutItem(
+                        workout = workout,
+                        onWeightSumChange = { updatedWorkout ->
+                            workoutViewModel.updateWorkout(updatedWorkout)
                         }
-                    }
+                    )
                 }
             }
 
@@ -160,7 +160,8 @@ fun WorkoutFragment(workoutCategoryId: Int) {
                         confirmButton = {
                             TextButton(onClick = {
                                 /* Handle clear action here */
-                                //TODO: Store the result to DataStore
+                                //TODO: Store the result local
+                                //TODO: Store the result online
                                 workoutViewModel.updateWeightSum(0)
                                 showDialog = false
                             }) {
@@ -169,7 +170,6 @@ fun WorkoutFragment(workoutCategoryId: Int) {
                         },
                         dismissButton = {
                             TextButton(onClick = {
-                                workoutViewModel.updateWeightSum(0)
                                 showDialog = false
                             }
                             ) {
