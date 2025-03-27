@@ -1,0 +1,3 @@
+Workoutcategory can have multiple associate workouts
+workout has one workoutcategory
+workout has workoutcategory_id as foreign key
