@@ -41,14 +41,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.spencer.workouttracker.database.Workout
-import com.spencer.workouttracker.database.WorkoutCategory
 import com.spencer.workouttracker.viewmodel.WorkoutViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun WorkoutFragment(workoutCategoryId: Int) {
-    val workoutViewModel: WorkoutViewModel = hiltViewModel()
+fun WorkoutFragment(workoutCategoryId: Int, workoutViewModel: WorkoutViewModel) {
+
     //preload the workouts for the selected category into the view model using id
     LaunchedEffect(workoutCategoryId) {
         workoutViewModel.loadWorkoutsForCategory(workoutCategoryId)

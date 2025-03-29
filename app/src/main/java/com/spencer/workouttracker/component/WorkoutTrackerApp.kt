@@ -93,6 +93,6 @@ fun WorkoutTrackerApp() {
 
         }
         // Workout Fragments
-        selectedCategory?.let { WorkoutFragment(workoutCategoryId = it.id) }
+        selectedCategory?.let { WorkoutFragment(workoutCategoryId = it.id,viewModel) }
     }
 }
