@@ -1,20 +1,20 @@
 package com.spencer.workouttracker.repository
 
-import android.annotation.SuppressLint
-import android.content.Context
+
 import com.spencer.workouttracker.database.Workout
 import com.spencer.workouttracker.database.WorkoutCategory
-import com.spencer.workouttracker.database.WorkoutDatabase
+import com.spencer.workouttracker.database.WorkoutCategoryDao
+import com.spencer.workouttracker.database.WorkoutDao
 
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class WorkoutRepository @Inject constructor(
-    private val workoutDatabase: WorkoutDatabase
+    private val workoutDao: WorkoutDao,
+    private val workoutCategoryDao: WorkoutCategoryDao
 ) {
-    private val workoutCategoryDao = workoutDatabase.workoutCategoryDao()
-    private val workoutDao = workoutDatabase.workoutDao()
+
     //TODO: convert List to Flow when data size grows and update corresponding Dao and view model methods
     suspend fun getAllWorkoutCategories(): List<WorkoutCategory> {
         return workoutCategoryDao.getAll()
@@ -29,7 +29,14 @@ class WorkoutRepository @Inject constructor(
     suspend fun updateWorkoutCategory(category: WorkoutCategory) {
         workoutCategoryDao.update(category)
     }
-
+    suspend fun getWeightSum(categoryId: Int): Int {
+        return getCategoryById(categoryId)?.let { category ->
+           category.weightSum
+        } ?: 0
+    }
+    fun getCategoryById(categoryId: Int): WorkoutCategory? {
+        return workoutCategoryDao.getCategoryById(categoryId)
+    }
     suspend fun deleteWorkoutCategory(category: WorkoutCategory) {
         workoutCategoryDao.delete(category)
     }
