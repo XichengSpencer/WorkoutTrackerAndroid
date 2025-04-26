@@ -27,11 +27,10 @@ import com.spencer.workouttracker.database.Workout
 //Workout item detail display
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WorkoutItem(workout: Workout, onWeightSumChange: (Int) -> Unit)  {
+fun WorkoutItem(workout: Workout, onWeightSumChange: (Workout) -> Unit)  {
     var workoutWeight by remember { mutableStateOf("${workout.weight}") }
     var workoutRepetitions by remember { mutableStateOf("${workout.repetitions}") }
     var workoutSets by remember { mutableStateOf("${workout.sets}") }
-    var globalWeightSum = 0
 
     Row(
         modifier = Modifier
@@ -55,8 +54,13 @@ fun WorkoutItem(workout: Workout, onWeightSumChange: (Int) -> Unit)  {
                     val repetitions = workoutRepetitions.toIntOrNull() ?: 0
                     val sets = workoutSets.toIntOrNull() ?: 0
                     if (weight > 0 && repetitions > 0 && sets > 0) {
-                        globalWeightSum += weight * repetitions * sets
-                        onWeightSumChange(globalWeightSum)
+                        //create new workout object with updated weight sum
+                        val newWorkout = workout.copy(
+                            weight = weight,
+                            repetitions = repetitions,
+                            sets = sets
+                        )
+                        onWeightSumChange(newWorkout)
                     }
                 }
         )
