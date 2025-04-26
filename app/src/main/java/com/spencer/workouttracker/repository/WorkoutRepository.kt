@@ -34,7 +34,7 @@ class WorkoutRepository @Inject constructor(
            category.weightSum
         } ?: 0
     }
-    fun getCategoryById(categoryId: Int): WorkoutCategory? {
+    suspend fun getCategoryById(categoryId: Int): WorkoutCategory? {
         return workoutCategoryDao.getCategoryById(categoryId)
     }
     suspend fun deleteWorkoutCategory(category: WorkoutCategory) {

@@ -8,7 +8,9 @@ import androidx.room.RoomDatabase
 abstract class WorkoutDatabase : RoomDatabase() {
     abstract fun workoutCategoryDao(): WorkoutCategoryDao
     abstract fun workoutDao(): WorkoutDao
+
+    companion object {
+        const val DATABASE_NAME = "workout_database"
+    }
 }
-
-
 

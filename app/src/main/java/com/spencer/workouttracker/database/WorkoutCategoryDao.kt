@@ -10,13 +10,17 @@ import androidx.room.Update
 @Dao
 interface WorkoutCategoryDao {
     @Query("SELECT * FROM workoutcategory")
-    fun getAll(): List<WorkoutCategory>
+    suspend fun getAll(): List<WorkoutCategory>
 
     @Transaction
     @Query("SELECT * FROM Workout WHERE categoryId = :categoryId")
-    fun getWorkoutsForCategory(categoryId: Int): List<Workout>
+    suspend fun getWorkoutsForCategory(categoryId: Int): List<Workout>
+
+    @Query("SELECT * FROM workoutcategory WHERE id = :categoryId")
+    suspend fun getCategoryById(categoryId: Int): WorkoutCategory?
+
     @Insert
-    fun insertAll(vararg workoutCategories: WorkoutCategory)
+    suspend fun insertAll(vararg workoutCategories: WorkoutCategory)
     @Insert
     fun insert(workoutCategory: WorkoutCategory)
     @Update
