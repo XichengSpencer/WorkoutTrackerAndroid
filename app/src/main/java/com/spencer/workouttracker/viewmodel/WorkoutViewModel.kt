@@ -56,6 +56,7 @@ class WorkoutViewModel @Inject constructor(
             // Switch back to Main thread to update LiveData if needed,
             // though setting LiveData.value is main-safe.
             _workoutCategories.postValue(categories)
+             //TODO: manually add some categories for testing
          }
     }
     fun insertWorkout(workout: Workout) {
